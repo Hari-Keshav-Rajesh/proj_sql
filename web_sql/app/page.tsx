@@ -1,5 +1,7 @@
 "use client"
 
+import { useRouter } from "next/navigation"
+
 import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -16,17 +18,25 @@ import { Label } from "@/components/ui/label"
 
 export default function Login(){
 
+  const router = useRouter()
+
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
 
   function handleLogin(event: any){
     event.preventDefault()
     console.log(username, password)
+    router.push("/dash")
   }
 
   return(
-    <div className="h-screen w-screen flex justify-center items-center">
-      
+    <div className="h-screen w-screen flex flex-col gap-20 justify-center items-center">
+
+      <div className="flex flex-col">
+        <div className="text-center text-6xl font-bold animate-jump-in animate-duration-[2000ms] animate-ease-in lg:text-8xl xl:text-7xl">INFINITI</div>
+        <div className="font-extralight sm:text-xs md:text-base lg:text-xl animate-fade animate-duration-[2000ms] animate-delay-[2000ms] animate-ease-in">Limitless knowledge,at your fingertips</div>
+      </div>
+
       <Card className="w-[350px]">
       <CardHeader>
         <CardTitle>Login</CardTitle>
