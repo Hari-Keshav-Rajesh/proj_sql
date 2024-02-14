@@ -33,11 +33,11 @@ export default function Login(){
     <div className="h-screen w-screen flex flex-col gap-20 justify-center items-center">
 
       <div className="flex flex-col">
-        <div className="text-center text-6xl font-bold animate-jump-in animate-duration-[2000ms] animate-ease-in lg:text-8xl xl:text-7xl">INFINITI</div>
+        <div className="text-center text-5xl font-bold animate-jump-in animate-duration-[2000ms] animate-ease-in lg:text-8xl xl:text-7xl">INFINITI</div>
         <div className="font-extralight sm:text-xs md:text-base lg:text-xl animate-fade animate-duration-[2000ms] animate-delay-[2000ms] animate-ease-in">Limitless knowledge,at your fingertips</div>
       </div>
 
-      <Card className="w-[350px]">
+      <Card className="w-fit md:w-[350px]">
       <CardHeader>
         <CardTitle>Login</CardTitle>
         <CardDescription>Where every book is just a tap away.</CardDescription>
