@@ -16,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
+import { siteConfig } from "@/config/siteconfig"
+
 export default function Login(){
 
   const router = useRouter()
@@ -33,8 +35,8 @@ export default function Login(){
     <div className="h-screen w-screen flex flex-col gap-20 justify-center items-center">
 
       <div className="flex flex-col">
-        <div className="text-center text-5xl font-bold animate-jump-in animate-duration-[2000ms] animate-ease-in lg:text-8xl xl:text-7xl">INFINITI</div>
-        <div className="font-extralight sm:text-xs md:text-base lg:text-xl animate-fade animate-duration-[2000ms] animate-delay-[2000ms] animate-ease-in">Limitless knowledge,at your fingertips</div>
+        <div className="text-center text-5xl font-bold animate-jump-in animate-duration-[2000ms] animate-ease-in lg:text-8xl xl:text-7xl">{siteConfig.title}</div>
+        <div className="font-extralight sm:text-xs md:text-base lg:text-xl animate-fade animate-duration-[2000ms] animate-delay-[2000ms] animate-ease-in">{siteConfig.description}</div>
       </div>
 
       <Card className="w-fit md:w-[350px]">
