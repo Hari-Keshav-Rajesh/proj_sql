@@ -11,6 +11,7 @@ import IconList from "./icon-list";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
+import SiteSheet from "./site-sheet";
 
 export default function SiteHeader(){
 
@@ -47,7 +48,7 @@ export default function SiteHeader(){
             <IconList />
           </div>
           <ThemeToggle />
-          Hi
+          <SiteSheet />
         </div>
       </div>
         </header>
