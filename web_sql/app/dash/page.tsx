@@ -1,7 +1,9 @@
+import BookCard from "@/components/bookCard";
+
 export default function home() {
   return (
-    <div>
-      <h1>Home</h1>
+    <div className="flex justify-center items-center h-screen w-90">
+      <BookCard />
     </div>
   );
 }

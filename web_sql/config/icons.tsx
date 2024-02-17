@@ -7,7 +7,9 @@ import {
     Moon,
     SunMedium,
     Twitter,
-    Github
+    Github,
+    Star,
+    StarHalf
   } from 'lucide-react';
   
   
@@ -20,4 +22,6 @@ import {
     hamburger: Menu,
     arrowLeft: ArrowLeft,
     github: Github,
+    star: Star,
+    halfStar: StarHalf
   }
