@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -26,11 +25,16 @@ export default function Login(){
 
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
 
   function handleLogin(event: any){
     event.preventDefault()
-    if(username === "" || password === ""){
+    if(username === "" || password === "" || confirmPassword === ""){
       alert("Please fill in all fields")
+      return
+    }
+    if(password !== confirmPassword){
+      alert("Passwords do not match")
       return
     }
     console.log(username, password)
@@ -40,15 +44,10 @@ export default function Login(){
   return(
     <div className="h-screen w-screen flex flex-col gap-20 justify-center items-center">
 
-      <div className="flex flex-col">
-        <div className="text-center text-5xl font-bold animate-jump-in animate-duration-[2000ms] animate-ease-in lg:text-8xl xl:text-7xl">{siteConfig.title}</div>
-        <div className="font-extralight sm:text-xs md:text-base lg:text-xl animate-fade animate-duration-[2000ms] animate-delay-[2000ms] animate-ease-in">{siteConfig.description}</div>
-      </div>
 
       <Card className="w-fit md:w-[350px]">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>Where every book is just a tap away.</CardDescription>
+        <CardTitle>Sign-Up</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleLogin}>
@@ -65,16 +64,19 @@ export default function Login(){
               onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="password">Confirm Password</Label>
+              <Input type="password" id="confirmPassword" placeholder="Confirm Password" 
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </div>
           </div>
         </form>
       </CardContent>
       <CardFooter className="flex flex-col gap-4">
         <Button className="w-full"
         onClick={(e)=>handleLogin(e)}
-        >Login</Button>
-        <Link href="/sign-up">
-          <Button variant="link">Don&apos;t have an account? Sign up</Button>
-        </Link>
+        >Sign-Up</Button>
       </CardFooter>
     </Card>
 
