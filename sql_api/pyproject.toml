@@ -2,12 +2,19 @@
 name = "sql-api"
 version = "0.1.0"
 description = ""
-authors = ["SatyajitsinhJhala <satyajitsinh2410@gmail.com>"]
+authors = ["SatyajitsinhJhala <satyajitsinh2410@gmail.com>","Hari Keshav Rajesh <harikeshav.rajesh@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.9"
+fastapi = "^0.110.0"
+sqlalchemy = "^2.0.27"
+pymysql = "^1.1.0"
+taskipy = "^1.12.2"
+uvicorn = "^0.27.1"
 
+[tool.taskipy.tasks]
+server = { cmd = "uvicorn main:app --reload", help = "Runs the API Server"}
 
 [build-system]
 requires = ["poetry-core"]
