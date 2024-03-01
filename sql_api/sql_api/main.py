@@ -7,6 +7,11 @@ from typing import Annotated
 import models
 from database import engine,SessionLocal
 from sqlalchemy.orm import Session
+
+from utils.get_db import get_db
+
+from login import *
+
 origins = ["http://localhost:8000"]  
 
 
@@ -23,14 +28,6 @@ app.add_middleware(
 def read_root():
     return {"message": "Welcome to the API!"}
 
-
-
-def get_db():
-    db=SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 models.Base.metadata.create_all(bind=engine)
 
