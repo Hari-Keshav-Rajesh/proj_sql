@@ -2,12 +2,14 @@ import os
 import dotenv
 import jwt
 from fastapi import Header, HTTPException, Depends
+from datetime import datetime, timedelta
 
 dotenv.load_dotenv()
 secret_key = os.getenv("secret_key")
 
 def create_jwt(user_id: str):
-    encoded_jwt = jwt.encode({"user_id": user_id},secret_key, algorithm="HS256")
+    payload = {"user_id": user_id,"exp": datetime.utcnow() + timedelta(minutes=90)}
+    encoded_jwt = jwt.encode(payload,secret_key, algorithm="HS256")
     return encoded_jwt
 
 def decode_jwt(token):

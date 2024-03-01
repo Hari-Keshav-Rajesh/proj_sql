@@ -16,6 +16,7 @@ python-dotenv = "^1.0.1"
 uuid = "^1.30"
 pyjwt = "^2.8.0"
 bcrypt = "^4.1.2"
+datetime = "^5.4"
 
 [tool.taskipy.tasks]
 server = { cmd = "uvicorn main:app --reload", help = "Runs the API Server"}
