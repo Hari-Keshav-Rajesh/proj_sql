@@ -26,6 +26,6 @@ class Borrowed(Base):
 class User(Base):
     __tablename__='user'
     id=Column(VARCHAR(15),primary_key=True,index=True)
-    username=Column(VARCHAR(20),unique=True,nullable=False)
-    password=Column(VARCHAR(20),nullable=False)
+    username=Column(VARCHAR(30),unique=True,nullable=False)
+    password=Column(VARCHAR(100),nullable=False)
 
