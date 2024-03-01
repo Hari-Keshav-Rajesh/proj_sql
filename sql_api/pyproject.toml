@@ -12,6 +12,7 @@ sqlalchemy = "^2.0.27"
 pymysql = "^1.1.0"
 taskipy = "^1.12.2"
 uvicorn = "^0.27.1"
+python-dotenv = "^1.0.1"
 
 [tool.taskipy.tasks]
 server = { cmd = "uvicorn main:app --reload", help = "Runs the API Server"}

@@ -1,14 +1,14 @@
 from app import app
-from fastapi.middleware.cors import CORSMiddleware,FastAPI,Depends
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Depends
+
 from pydantic import BaseModel
 from typing import Annotated
 import models
 from database import engine,SessionLocal
-from sqlalchemy.orm import session
-import re
+from sqlalchemy.orm import Session
 origins = ["http://localhost:8000"]  
 
-app=FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,10 +24,6 @@ def read_root():
     return {"message": "Welcome to the API!"}
 
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
-
 
 def get_db():
     db=SessionLocal()
@@ -35,8 +31,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
-db_dependency=Annotated[session,Depends(get_db)]
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -66,21 +60,21 @@ class borrowedBase(BaseModel):
 
 
 @app.post("/books/")##change the /books/ for endpoint
-async def create_book(book: BookBase,db:db_dependency):
+async def create_book(book: BookBase,db:Session=Depends(get_db)):
     db_book=models.Book(**book.dict())
     db.add(db_book)
     db.commit()
     return{"Message":"Book Added To Library."}
 
 @app.post("/wishlist/")
-async def create_wishlist(wBook: wishlistBase,db:db_dependency):
+async def create_wishlist(wBook: wishlistBase,db:Session=Depends(get_db)):
     db_wBook=models.WishList(**wBook.dict())
     db.add(db_wBook)
     db.commit()
     return{"Message":"Book Added To Wishlist Successfully."}
 
 @app.post("/BorrowedBooks/")
-async def create_borrowedBooks(borBook: borrowedBase, db: db_dependency):
+async def create_borrowedBooks(borBook: borrowedBase, db: Session=Depends(get_db)):
     # Check the number of borrowed books for the given user ID
     user_id = borBook.UserId
     num_borrowed_books = db.query(models.Borrowed).filter(models.Borrowed.UserId == user_id).count()
@@ -97,7 +91,7 @@ async def create_borrowedBooks(borBook: borrowedBase, db: db_dependency):
     return {"message": "Borrowed Book Added Successfully"}
 
 @app.post("/returnBook/")
-async def return_book(returned_book: borrowedBase, db: db_dependency):
+async def return_book(returned_book: borrowedBase, db: Session=Depends(get_db)):
     # Check if the book is borrowed by the specified user
     borrowed_book = db.query(models.Borrowed).filter(
         models.Borrowed.UserId == returned_book.UserId,
@@ -118,3 +112,7 @@ async def return_book(returned_book: borrowedBase, db: db_dependency):
         db.commit()
 
     return {"message": "Book returned successfully"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
