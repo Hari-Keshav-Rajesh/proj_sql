@@ -33,21 +33,11 @@ import {
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
 
-export default function BookCard(){
-
-    const title = "The Book of INFINITI";
-
-    const author = "Zeeter CJ";
-
-    const tags = ["Fiction", "Fantasy", "Adventure"];
-
-    const rating = 4.8;
+export default function BookCard({title, author, tags, rating, stock}: {title: string, author: string, tags: string[], rating: number, stock: number}){
 
     const fullStar = Math.floor(rating);
 
     const halfStar = (rating - fullStar)/0.5;
-
-    const stock = 3;
 
     const { toast } = useToast()
 
