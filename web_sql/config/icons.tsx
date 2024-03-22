@@ -9,7 +9,10 @@ import {
     Twitter,
     Github,
     Star,
-    StarHalf
+    StarHalf,
+    MapPin,
+    Phone,
+    Mail
   } from 'lucide-react';
   
   
@@ -23,5 +26,8 @@ import {
     arrowLeft: ArrowLeft,
     github: Github,
     star: Star,
-    halfStar: StarHalf
+    halfStar: StarHalf,
+    mapPin: MapPin,
+    phone: Phone,
+    mail: Mail
   }
