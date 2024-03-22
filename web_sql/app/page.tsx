@@ -20,6 +20,8 @@ import { siteConfig } from "@/config/siteconfig"
 
 import Link from "next/link"
 
+import Cookies from "js-cookie"
+
 export default function Login(){
 
   const router = useRouter()
@@ -27,14 +29,29 @@ export default function Login(){
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
 
-  function handleLogin(event: any){
+  async function handleLogin(event: any){
     event.preventDefault()
     if(username === "" || password === ""){
       alert("Please fill in all fields")
       return
     }
-    console.log(username, password)
-    router.push("/dash")
+    const response = await fetch(`${siteConfig.apiURL}/login`, 
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({username, password})
+    })
+    const data = await response.json()
+    if(data.status){
+      Cookies.set("token", data.token)
+      router.push("/dash")
+      console.log(Cookies.get("token"))
+    }
+    else{
+      alert(data.message)
+    }
   }
 
   return(
