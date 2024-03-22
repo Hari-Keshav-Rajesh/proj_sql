@@ -33,7 +33,9 @@ import {
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
 
-export default function BookCard({title, author, tags, rating, stock}: {title: string, author: string, tags: string[], rating: number, stock: number}){
+import toTitleCase from '@/config/utils/titleCase';
+
+export default function BookCard({title, author, tags, rating, stock,description}: {title: string, author: string, tags: string[], rating: number, stock: number,description: string}){
 
     const fullStar = Math.floor(rating);
 
@@ -41,15 +43,23 @@ export default function BookCard({title, author, tags, rating, stock}: {title: s
 
     const { toast } = useToast()
 
+    const showTitle = title.slice(0,32);
+
+    const showAuthor = author.slice(0, 20);
+
     return(
-        <Card className="flex h-fit w-c80 flex-col bg-card bg-opacity-70 shadow-md duration-300 ease-in-out hover:scale-105 hover:bg-opacity-100 hover:shadow-lg md:w-c40 xl:w-c25">
+        <Card className="flex h-fit w-c80 flex-col bg-card bg-opacity-70 shadow-md duration-300 ease-in-out hover:scale-100 xl:hover:scale-105 hover:bg-opacity-100 hover:shadow-lg md:w-c40 xl:w-c25">
                   <CardHeader>
                     <CardTitle className="flex flex-col justify-center">
                       <div className="flex text-2xl font-bold">
-                        {title}
+                        {
+                            title.length > 32 ? `${toTitleCase(showTitle)}...` : `${toTitleCase(title)}`
+                        }
                       </div>
                       <div className="text-base font-light dark:font-extralight">
-                        by {author}
+                        {
+                            author.length > 20 ? `by ${toTitleCase(showAuthor)}...` : `by ${toTitleCase(showAuthor)}`
+                        }
                     </div>
                     </CardTitle>
                   </CardHeader>
@@ -86,7 +96,7 @@ export default function BookCard({title, author, tags, rating, stock}: {title: s
                             </HoverCardTrigger>
 
                             <HoverCardContent>
-                                <p className='text-sm'>Add a brief description of the book here</p>
+                                <p className='text-sm'>{description}</p>
                             </HoverCardContent>
                             
                         </HoverCard>

@@ -19,6 +19,7 @@ export default function Rate() {
                     tags={book.tags}
                     rating={book.rating}
                     stock={book.stock}
+                    description={book.description}
                 />
             ))}
         </div>
