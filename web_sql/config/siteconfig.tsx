@@ -14,5 +14,6 @@ export const siteConfig = {
         linkedin: 'https://in.linkedin.com',
         github: 'https://github.com/Hari-Keshav-Rajesh/proj_sql',
         twitter: 'https://twitter.com',
-    }
+    },
+    apiURL: "http://localhost:8000",
 }

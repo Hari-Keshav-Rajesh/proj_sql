@@ -17,8 +17,6 @@ import { Label } from "@/components/ui/label"
 
 import { siteConfig } from "@/config/siteconfig"
 
-import Link from "next/link"
-
 export default function Login(){
 
   const router = useRouter()
@@ -27,7 +25,7 @@ export default function Login(){
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
 
-  function handleLogin(event: any){
+  const handleLogin = async (event:any) => {
     event.preventDefault()
     if(username === "" || password === "" || confirmPassword === ""){
       alert("Please fill in all fields")
@@ -37,8 +35,25 @@ export default function Login(){
       alert("Passwords do not match")
       return
     }
-    console.log(username, password)
-    router.push("/dash")
+
+    const response:any = await fetch(`${siteConfig.apiURL}/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    })
+    const data:any = await response.json()
+    if(data.status){
+      alert(data.message)
+      router.push("/")
+    }
+    else{
+      alert(data.message)
+    }
   }
 
   return(
