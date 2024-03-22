@@ -1,5 +1,7 @@
 import SiteHeader from "@/components/siteHeader"
 
+import SiteFooter from "@/components/siteFooter"
+
 
 export default function DashboardLayout({
         children,
@@ -12,6 +14,7 @@ export default function DashboardLayout({
                 <section>   
                         {children}
                 </section>
+                <SiteFooter />
         </>
         )
     }
