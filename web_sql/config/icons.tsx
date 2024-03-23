@@ -12,7 +12,8 @@ import {
     StarHalf,
     MapPin,
     Phone,
-    Mail
+    Mail,
+    Search
   } from 'lucide-react';
   
   
@@ -29,5 +30,6 @@ import {
     halfStar: StarHalf,
     mapPin: MapPin,
     phone: Phone,
-    mail: Mail
+    mail: Mail,
+    search : Search
   }
