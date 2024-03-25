@@ -47,6 +47,10 @@ export default function BookCard({title, author, tags, rating, stock,description
 
     const showAuthor = author.slice(0, 20);
 
+    function borrowBook(title:string){
+        console.log(`Borrowed ${title}`)
+    }
+
     return(
         <Card className="flex h-fit w-c80 flex-col bg-card bg-opacity-70 shadow-md duration-300 ease-in-out hover:scale-100 xl:hover:scale-105 hover:bg-opacity-100 hover:shadow-lg md:w-c40 xl:w-c25">
                   <CardHeader>
@@ -133,7 +137,7 @@ export default function BookCard({title, author, tags, rating, stock,description
                                                         <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
                                                     ),
                                                     })
-                                                    console.log("Book has been borrowed!")
+                                                    borrowBook(title)
                                                 }}
                                                 >
                                                 Continue
@@ -152,9 +156,25 @@ export default function BookCard({title, author, tags, rating, stock,description
                                             Sorry, this book is unavailable at the moment.
                                             Please check again in a few days.
                                         </AlertDialogDescription>
-                                        <AlertDialogFooter>
+                                        <AlertDialogFooter className='flex '>
+                                            <AlertDialogCancel>
+                                                Back
+                                            </AlertDialogCancel>
                                             <AlertDialogAction>
-                                                Ok
+                                                <Button
+                                                variant="default"
+                                                onClick={() => {
+                                                    toast({
+                                                    title: `${title}`,
+                                                    description: "Added to Wishlist!",
+                                                    action: (
+                                                        <ToastAction altText="Goto wishlist to undo">Undo</ToastAction>
+                                                    ),
+                                                    })
+                                                }}
+                                                >
+                                                Add to Wishlist
+                                                </Button>
                                             </AlertDialogAction>
                                         </AlertDialogFooter>
                                     </>
