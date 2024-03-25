@@ -51,6 +51,10 @@ export default function BookCard({title, author, tags, rating, stock,description
         console.log(`Borrowed ${title}`)
     }
 
+    function wishlistBook(title:string){
+        console.log(`Added ${title} to wishlist`)
+    }
+
     return(
         <Card className="flex h-fit w-c80 flex-col bg-card bg-opacity-70 shadow-md duration-300 ease-in-out hover:scale-100 xl:hover:scale-105 hover:bg-opacity-100 hover:shadow-lg md:w-c40 xl:w-c25">
                   <CardHeader>
@@ -171,6 +175,7 @@ export default function BookCard({title, author, tags, rating, stock,description
                                                         <ToastAction altText="Goto wishlist to undo">Undo</ToastAction>
                                                     ),
                                                     })
+                                                    wishlistBook(title)
                                                 }}
                                                 >
                                                 Add to Wishlist
