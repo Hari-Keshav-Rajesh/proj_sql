@@ -4,7 +4,7 @@ const books = [
         title: 'The Alchemist',
         author: 'Paulo Coelho',
         tags: ['fantasy', 'fiction'],
-        stock: 10,
+        stock: 0,
         rating: 4.75,
         description: 'A philosophical novel about a young Andalusian shepherd named Santiago who travels from Spain to Egypt in search of a treasure hidden in the pyramids.'
     },
