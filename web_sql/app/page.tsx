@@ -29,6 +29,13 @@ export default function Login(){
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
 
+  function handleView(event:any){
+    event.preventDefault()
+    Cookies.set("token", "view")
+    console.log(Cookies.get("token"))
+    router.push("/dash")
+  }
+
   async function handleLogin(event: any){
     event.preventDefault()
     if(username === "" || password === ""){
@@ -55,45 +62,56 @@ export default function Login(){
   }
 
   return(
-    <div className="h-screen w-screen flex flex-col gap-20 justify-center items-center">
+    <div className="h-screen w-screen flex flex-col justify-center items-center gap-20">
 
       <div className="flex flex-col">
         <div className="text-center text-5xl font-bold animate-jump-in animate-duration-[2000ms] animate-ease-in lg:text-8xl xl:text-7xl">{siteConfig.title}</div>
         <div className="font-extralight sm:text-xs md:text-base lg:text-xl animate-fade animate-duration-[2000ms] animate-delay-[2000ms] animate-ease-in">{siteConfig.description}</div>
       </div>
 
-      <Card className="w-fit md:w-[350px]">
-      <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>Where every book is just a tap away.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleLogin}>
-          <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="username">Username</Label>
-              <Input type="text" id="username" placeholder="Your Username" 
-              onChange={(e) => setUsername(e.target.value)}
-              />
+      <div className="flex flex-col items-center">
+
+        <Card className="w-fit md:w-[350px]">
+        <CardHeader>
+          <CardTitle>Login</CardTitle>
+          <CardDescription>Where every book is just a tap away.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin}>
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="username">Username</Label>
+                <Input type="text" id="username" placeholder="Your Username" 
+                onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="password">Password</Label>
+                <Input type="password" id="password" placeholder="Your Password" 
+                onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
             </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="password">Password</Label>
-              <Input type="password" id="password" placeholder="Your Password" 
-              onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
-        </form>
-      </CardContent>
-      <CardFooter className="flex flex-col gap-4">
-        <Button className="w-full"
-        onClick={(e)=>handleLogin(e)}
-        >Login</Button>
-        <Link href="/sign-up">
-          <Button variant="link">Don&apos;t have an account? Sign up</Button>
-        </Link>
-      </CardFooter>
-    </Card>
+          </form>
+        </CardContent>
+        <CardFooter className="flex flex-col gap-4">
+          <Button className="w-full"
+          onClick={(e)=>handleLogin(e)}
+          >Login</Button>
+          <Link href="/sign-up">
+            <Button variant="link">Don&apos;t have an account? Sign up</Button>
+          </Link>
+        </CardFooter>
+      </Card>
+
+      <Button variant="link"
+        className="text-blue-500"
+        onClick={(e)=>handleView(e)}
+      >
+        Wanna have a look? View without sign-in
+      </Button>   
+
+    </div>
 
     </div>
   )

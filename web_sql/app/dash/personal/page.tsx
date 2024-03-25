@@ -1,3 +1,7 @@
+"use client"
+
+import { useEffect,useState } from "react";
+
 import BookCard from "@/components/bookCard";
 
 import { Button } from "@/components/ui/button";
@@ -15,8 +19,11 @@ import {
 
 import Link from "next/link"
 
+import Cookies from "js-cookie";
+
 export default function Personal(){
 
+  const [token, setToken] = useState(true);
     const borrowedBooks = [
       {
         id: 1,
@@ -77,81 +84,101 @@ export default function Personal(){
     }
     ]
 
-    return (
-      <div className="mt-20 mx-10 flex flex-col gap-16 lg:gap-24">
+    useEffect(() => {
+        const token = Cookies.get('token');
+        if(token === 'view'){
+          setToken(false);
+        }
+    })
 
-        <div className="flex flex-col gap-8 mt-c5 px-c3 pb-c3 md:mt-c1 lg:mt-c1 xl:mt-0">
-          <div className="text-4xl font-bold text-primary text-center">
-              Books You Borrowed
+    if(token === false){
+        return(
+            <div className="min-h-96 flex flex-col justify-center">
+              <h1 className="block h-full p-4 text-center text-6xl font-bold">
+                Please Log In To View This Page
+              </h1>
+            </div>
+        )
+    }
+    else{
+      return(
+          <div className="mt-20 mx-10 flex flex-col gap-16 lg:gap-24">
+    
+            <div className="flex flex-col gap-8 mt-c5 px-c3 pb-c3 md:mt-c1 lg:mt-c1 xl:mt-0">
+              <div className="text-4xl font-bold text-primary text-center">
+                  Books You Borrowed
+              </div>
+              <div className="flex flex-col gap-3 md:grid md:grid-cols-2 xl:grid-cols-3">
+                  {
+                    borrowedBooks.length>0 ?
+                    (
+                      borrowedBooks.map((book) => (
+                        <BookCard key={book.id} title={book.title} author={book.author} tags={book.tags} rating={book.rating} stock={book.stock} description={book.description}/>
+                      ))
+                    ) : (
+                      <div className="text-lg font-bold flex justify-center">
+                        No books borrowed yet
+                      </div>
+                    )
+                  }
+              </div>
+            </div >
+    
+            <div className="flex flex-col gap-8 mt-c5 px-c3 pb-c3 md:mt-c1 lg:mt-c1 xl:mt-0">
+              <div className="text-4xl font-bold text-primary text-center">
+                  Your Wishlist
+              </div>
+              <div className="flex flex-col gap-3 md:grid md:grid-cols-2 xl:grid-cols-3">
+                  {
+                    wishlistBooks.length>0 ?
+                    (
+                      wishlistBooks.map((book) => (
+                        <BookCard key={book.id} title={book.title} author={book.author} tags={book.tags} rating={book.rating} stock={book.stock} description={book.description}/>
+                      ))
+                    ) : (
+                      <div className="text-lg font-bold flex justify-center">
+                        Your Wishlist is empty
+                      </div>
+                    )
+                  }
+              </div>
+            </div >
+    
+            <div className="flex justify-center">
+              <AlertDialog>
+    
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">
+                    Log Out
+                  </Button>
+                </AlertDialogTrigger>
+    
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    Are you sure you want to log out?
+                  </AlertDialogHeader>
+                  <AlertDialogDescription>
+                    You will be redirected to the login page.
+                  </AlertDialogDescription>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>
+                      <Link href="/">
+                        Yes
+                      </Link>
+                    </AlertDialogCancel>
+                    <AlertDialogAction>
+                      No
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+    
+              </AlertDialog>
+    
+            </div>
+    
           </div>
-          <div className="flex flex-col gap-3 md:grid md:grid-cols-2 xl:grid-cols-3">
-              {
-                borrowedBooks.length>0 ?
-                (
-                  borrowedBooks.map((book) => (
-                    <BookCard key={book.id} title={book.title} author={book.author} tags={book.tags} rating={book.rating} stock={book.stock} description={book.description}/>
-                  ))
-                ) : (
-                  <div className="text-lg font-bold flex justify-center">
-                    No books borrowed yet
-                  </div>
-                )
-              }
-          </div>
-        </div >
+        );
+    }
 
-        <div className="flex flex-col gap-8 mt-c5 px-c3 pb-c3 md:mt-c1 lg:mt-c1 xl:mt-0">
-          <div className="text-4xl font-bold text-primary text-center">
-              Your Wishlist
-          </div>
-          <div className="flex flex-col gap-3 md:grid md:grid-cols-2 xl:grid-cols-3">
-              {
-                wishlistBooks.length>0 ?
-                (
-                  wishlistBooks.map((book) => (
-                    <BookCard key={book.id} title={book.title} author={book.author} tags={book.tags} rating={book.rating} stock={book.stock} description={book.description}/>
-                  ))
-                ) : (
-                  <div className="text-lg font-bold flex justify-center">
-                    Your Wishlist is empty
-                  </div>
-                )
-              }
-          </div>
-        </div >
-
-        <div className="flex justify-center">
-          <AlertDialog>
-
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive">
-                Log Out
-              </Button>
-            </AlertDialogTrigger>
-
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                Are you sure you want to log out?
-              </AlertDialogHeader>
-              <AlertDialogDescription>
-                You will be redirected to the login page.
-              </AlertDialogDescription>
-              <AlertDialogFooter>
-                <AlertDialogCancel>
-                  <Link href="/">
-                    Yes
-                  </Link>
-                </AlertDialogCancel>
-                <AlertDialogAction>
-                  No
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-
-          </AlertDialog>
-
-        </div>
-
-      </div>
-    );
+    
 };
