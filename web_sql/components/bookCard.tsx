@@ -6,9 +6,9 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-  } from '@/components/ui/card';
+  } from '@/components/ui/card'
 
-import { Icons } from '@/config/icons';
+import { Icons } from '@/config/icons'
 
 import {
     HoverCard,
@@ -16,10 +16,12 @@ import {
     HoverCardTrigger,
   } from "@/components/ui/hover-card"
 
-import { Button } from './ui/button';
+import { Button } from './ui/button'
 
 import { ToastAction } from "@/components/ui/toast"
 import { useToast } from "@/components/ui/use-toast"
+
+import Link from 'next/link'
 
 import {
     AlertDialog,
@@ -35,6 +37,8 @@ import {
 
 import toTitleCase from '@/config/utils/titleCase';
 
+import Cookies from 'js-cookie'
+
 export default function BookCard({title, author, tags, rating, stock,description}: {title: string, author: string, tags: string[], rating: number, stock: number,description: string}){
 
     const fullStar = Math.floor(rating);
@@ -47,12 +51,16 @@ export default function BookCard({title, author, tags, rating, stock,description
 
     const showAuthor = author.slice(0, 20);
 
+    let token = true;
+
+    Cookies.get("token") === "view" ? token = false : token = true;
+
     function borrowBook(title:string){
-        console.log(`Borrowed ${title}`)
+        console.log(`Borrowed ${title}`);
     }
 
     function wishlistBook(title:string){
-        console.log(`Added ${title} to wishlist`)
+        console.log(`Added ${title} to wishlist`);
     }
 
     return(
@@ -115,78 +123,104 @@ export default function BookCard({title, author, tags, rating, stock,description
                             <Button variant="default" className='font-bold p-5'>Borrow</Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
-                            {
-                                stock > 0 ? (
-                                    <>
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle>
-                                                Confirm Borrow
-                                            </AlertDialogTitle>
-                                        </AlertDialogHeader>
-                                        <AlertDialogDescription>
-                                            Are you sure you want to borrow this book?
-                                        </AlertDialogDescription>
-                                        <AlertDialogFooter>
-                                            <AlertDialogCancel>
-                                                Cancel
-                                            </AlertDialogCancel>
-                                            <AlertDialogAction>
-                                                <Button
-                                                variant="default"
-                                                onClick={() => {
-                                                    toast({
-                                                    title: `${title}`,
-                                                    description: "Added to Borrowed Books!",
-                                                    action: (
-                                                        <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
-                                                    ),
-                                                    })
-                                                    borrowBook(title)
-                                                }}
-                                                >
-                                                Continue
-                                                </Button>
-                                            </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                    </>
-                                ) : (
-                                    <>
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle>
-                                                Out of Stock
-                                            </AlertDialogTitle>
-                                        </AlertDialogHeader>
-                                        <AlertDialogDescription>
-                                            Sorry, this book is unavailable at the moment.
-                                            Please check again in a few days.
-                                        </AlertDialogDescription>
-                                        <AlertDialogFooter className='flex '>
-                                            <AlertDialogCancel>
-                                                Back
-                                            </AlertDialogCancel>
-                                            <AlertDialogAction>
-                                                <Button
-                                                variant="default"
-                                                onClick={() => {
-                                                    toast({
-                                                    title: `${title}`,
-                                                    description: "Added to Wishlist!",
-                                                    action: (
-                                                        <ToastAction altText="Goto wishlist to undo">Undo</ToastAction>
-                                                    ),
-                                                    })
-                                                    wishlistBook(title)
-                                                }}
-                                                >
-                                                Add to Wishlist
-                                                </Button>
-                                            </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                    </>
-                                )
-                            }
+                            {token ? (
+                            stock > 0 ? (
+                                <>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                    Confirm Borrow
+                                    </AlertDialogTitle>
+                                </AlertDialogHeader>
+                                <AlertDialogDescription>
+                                    Are you sure you want to borrow this book?
+                                </AlertDialogDescription>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                    Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction>
+                                    <Button
+                                        variant="default"
+                                        onClick={() => {
+                                        toast({
+                                            title: `${title}`,
+                                            description: "Added to Borrowed Books!",
+                                            action: (
+                                            <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+                                            ),
+                                        })
+                                        borrowBook(title)
+                                        }}
+                                    >
+                                        Continue
+                                    </Button>
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                                </>
+                            ) : (
+                                <>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                    Out of Stock
+                                    </AlertDialogTitle>
+                                </AlertDialogHeader>
+                                <AlertDialogDescription>
+                                    Sorry, this book is unavailable at the moment.
+                                    Please check again in a few days.
+                                </AlertDialogDescription>
+                                <AlertDialogFooter className='flex '>
+                                    <AlertDialogCancel>
+                                    Back
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction>
+                                    <Button
+                                        variant="default"
+                                        onClick={() => {
+                                        toast({
+                                            title: `${title}`,
+                                            description: "Added to Wishlist!",
+                                            action: (
+                                            <ToastAction altText="Goto wishlist to undo">Undo</ToastAction>
+                                            ),
+                                        })
+                                        wishlistBook(title)
+                                        }}
+                                    >
+                                        Add to Wishlist
+                                    </Button>
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                                </>
+                            )
+                            ) : (
+                            <>
+                                <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    Login Required
+                                </AlertDialogTitle>
+                                </AlertDialogHeader>
+                                <AlertDialogDescription>
+                                Please login to borrow books.
+                                </AlertDialogDescription>
+                                <AlertDialogFooter>
+                                <AlertDialogCancel>
+                                    Cancel
+                                </AlertDialogCancel>
+                                <AlertDialogAction>
+                                    <Link href='/'>
+                                        <Button
+                                        variant="default"
+                                        >
+                                            Login
+                                        </Button>
+                                    </Link>
+                                </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </>
+                            )}
                         </AlertDialogContent>
                         </AlertDialog>
+
                     </div>
                   </CardFooter>
                 </Card>
