@@ -2,7 +2,9 @@
 
 import { useEffect,useState } from "react";
 
-import BookCard from "@/components/bookCard";
+import BorrowedBookCard from "@/components/borrowedBookCard";
+
+import WishlistBookCard from "@/components/wishlistBookCard";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -91,7 +93,7 @@ export default function Personal(){
         }
     })
 
-    if(token === false){
+    if(token === true){
         return(
             <div className="min-h-96 flex flex-col justify-center">
               <h1 className="block h-full p-4 text-center text-6xl font-bold">
@@ -113,7 +115,7 @@ export default function Personal(){
                     borrowedBooks.length>0 ?
                     (
                       borrowedBooks.map((book) => (
-                        <BookCard key={book.id} title={book.title} author={book.author} tags={book.tags} rating={book.rating} stock={book.stock} description={book.description}/>
+                        <BorrowedBookCard key={book.id} title={book.title} author={book.author} tags={book.tags} rating={book.rating} stock={book.stock} description={book.description}/>
                       ))
                     ) : (
                       <div className="text-lg font-bold flex justify-center">
@@ -133,7 +135,7 @@ export default function Personal(){
                     wishlistBooks.length>0 ?
                     (
                       wishlistBooks.map((book) => (
-                        <BookCard key={book.id} title={book.title} author={book.author} tags={book.tags} rating={book.rating} stock={book.stock} description={book.description}/>
+                        <WishlistBookCard key={book.id} title={book.title} author={book.author} tags={book.tags} rating={book.rating} stock={book.stock} description={book.description}/>
                       ))
                     ) : (
                       <div className="text-lg font-bold flex justify-center">
