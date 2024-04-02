@@ -1,12 +1,12 @@
 from app import app
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import Depends
-
+from fastapi import FastAPI,Depends,BackgroundTasks
 from pydantic import BaseModel
 from typing import Annotated
 import models
 from database import engine,SessionLocal
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import session
+from datetime import datetime,timedelta
 
 from utils.get_db import get_db
 
@@ -14,6 +14,13 @@ from login import *
 
 origins = ["http://localhost:8000","http://localhost:3000"]  
 
+def get_db():
+    db=SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+db_dependency=Annotated[session,Depends(get_db)]
 
 app.add_middleware(
     CORSMiddleware,
@@ -32,13 +39,13 @@ def read_root():
 models.Base.metadata.create_all(bind=engine)
 
 class userBase(BaseModel):
-    id:int
+    id:str
     username:str
     password:str
 
 
 class BookBase(BaseModel):
-    book_id:int
+    book_id:str
     Name:str
     Author:str
     Genre:str
@@ -52,26 +59,26 @@ class wishlistBase(BaseModel):
     rating:int
 
 class borrowedBase(BaseModel):
-    UserId:int
-    BookId:int
+    UserId:str
+    BookId:str
 
 
 @app.post("/books/")##change the /books/ for endpoint
-async def create_book(book: BookBase,db:Session=Depends(get_db)):
+async def create_book(book: BookBase,db:db_dependency):
     db_book=models.Book(**book.dict())
     db.add(db_book)
     db.commit()
     return{"Message":"Book Added To Library."}
 
 @app.post("/wishlist/")
-async def create_wishlist(wBook: wishlistBase,db:Session=Depends(get_db)):
+async def create_wishlist(wBook: wishlistBase,db:db_dependency):
     db_wBook=models.WishList(**wBook.dict())
     db.add(db_wBook)
     db.commit()
     return{"Message":"Book Added To Wishlist Successfully."}
 
 @app.post("/BorrowedBooks/")
-async def create_borrowedBooks(borBook: borrowedBase, db: Session=Depends(get_db)):
+async def create_borrowedBooks(borBook: borrowedBase, db: db_dependency):
     # Check the number of borrowed books for the given user ID
     user_id = borBook.UserId
     num_borrowed_books = db.query(models.Borrowed).filter(models.Borrowed.UserId == user_id).count()
@@ -87,8 +94,18 @@ async def create_borrowedBooks(borBook: borrowedBase, db: Session=Depends(get_db
 
     return {"message": "Borrowed Book Added Successfully"}
 
+# @app.post("/login/",status_code=status.HTTP_201_CREATED)
+# async def create_user(userNP: userBase,db:db_dependency):
+#     db_userNp=models.user(**userNP.dict())
+#     if not is_username_unique(db_dependency,userNP.username):
+#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already exists")
+#     if not validate_password(userNP.password):
+#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password doesn't meet criteria")
+#     db.add(db_userNp)
+#     return{"message":"User created sucessfully"}
+
 @app.post("/returnBook/")
-async def return_book(returned_book: borrowedBase, db: Session=Depends(get_db)):
+async def return_book(returned_book: borrowedBase, db: db_dependency):
     # Check if the book is borrowed by the specified user
     borrowed_book = db.query(models.Borrowed).filter(
         models.Borrowed.UserId == returned_book.UserId,
@@ -109,6 +126,36 @@ async def return_book(returned_book: borrowedBase, db: Session=Depends(get_db)):
         db.commit()
 
     return {"message": "Book returned successfully"}
+
+async def get_books(user_id: int,db:db_dependency):
+    show_book=db.query(models.Borrowed).filter(models.Borrowed.User_id==user_id).all()
+    return show_book
+
+async def users_books(user_id: int ,db:db_dependency):
+    books=get_books(user_id,db)
+    return books
+async def num_books(user_id: int,db:db_dependency):
+    books=get_books(user_id,db)
+
+    count=len(books)
+    return {"The number of books borrowed: ":count}
+
+async def check_overdue(db:db_dependency):
+    fourteen_days_ago=datetime.utcnow() - timedelta(days=14)
+    overdue_books=db.query(models.Borrowed).filters(models.Borrowed.checkout_date<fourteen_days_ago).all()
+    minimum_overduefees=10
+    for book in overdue_books:
+        days=book.checkout_date-fourteen_days_ago
+        book.status="Overdue"
+        book.overdueFees=days*minimum_overduefees
+        
+    db.commit()
+    
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
+#     background_task=BackgroundTasks()
+#     background_task.add_task(check_overdue)
+#     return background_task
 
 if __name__ == "__main__":
     import uvicorn
