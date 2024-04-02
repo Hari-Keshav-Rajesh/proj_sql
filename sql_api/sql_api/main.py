@@ -54,26 +54,29 @@ class wishlistBase(BaseModel):
 class borrowedBase(BaseModel):
     BookId:str
 
+# Get all books
 @app.get("/allBooks")
 async def show_books(db:Session=Depends(get_db),):
     books=db.query(models.Book).all()
     return books
 
-@app.post("/books/")##change the /books/ for endpoint
+# Create a new book
+@app.post("/books")
 async def create_book(book: BookBase,db:Session=Depends(get_db)):
     db_book=models.Book(**book.dict())
     db.add(db_book)
     db.commit()
     return{"Message":"Book Added To Library."}
 
-@app.post("/wishlist/")
+@app.post("/wishlist")
 async def create_wishlist(wBook: wishlistBase,db:Session=Depends(get_db)):
     db_wBook=models.WishList(**wBook.dict())
     db.add(db_wBook)
     db.commit()
     return{"Message":"Book Added To Wishlist Successfully."}
 
-@app.post("/borrowedBook/")
+# Borrow a book
+@app.post("/borrowBook")
 async def create_borrowedBooks(borBook: borrowedBase, db: Session = Depends(get_db), token: str = Depends(extract_token)):
     # Check the number of borrowed books for the given user ID
     payload = get_token_payload(token)
@@ -99,7 +102,8 @@ async def create_borrowedBooks(borBook: borrowedBase, db: Session = Depends(get_
 
     return {"message": "Borrowed Book Added Successfully"}
 
-@app.post("/returnBook/")
+# Return a borrowed book
+@app.post("/returnBook")
 async def return_book(returned_book: borrowedBase, db:Session=Depends(get_db), token: str=Depends(extract_token)):
     # Check if the book is borrowed by the specified user
     payload = get_token_payload(token)
@@ -126,18 +130,22 @@ async def return_book(returned_book: borrowedBase, db:Session=Depends(get_db), t
 
     return {"message": "Book returned successfully"}
 
-async def get_books(user_id: int,db:Session=Depends(get_db)):
-    show_book=db.query(models.Borrowed).filter(models.Borrowed.User_id==user_id).all()
-    return show_book
+# Get all borrowed books of user
+@app.get("/borrowBook")
+async def show_borrowed_books(db:Session=Depends(get_db),token:str=Depends(extract_token)):
+    payload=get_token_payload(token)
+    user_id=payload["user_id"]
 
-async def users_books(user_id: int ,db:Session=Depends(get_db)):
-    books=get_books(user_id,db)
-    return books
-async def num_books(user_id: int,db:Session=Depends(get_db)):
-    books=get_books(user_id,db)
+    #return book_id of borrowed books
+    borrowed_books_id = db.query(models.Borrowed.book_id).filter(models.Borrowed.User_id == user_id).all()
+    
+    borrowed_books = []
 
-    count=len(books)
-    return {"The number of books borrowed: ":count}
+    #return books from book table
+    for book_id in borrowed_books_id:
+        borrowed_books.append(db.query(models.Book).filter(models.Book.book_id == book_id[0]).first())
+    
+    return borrowed_books
 
 if __name__ == "__main__":
     import uvicorn

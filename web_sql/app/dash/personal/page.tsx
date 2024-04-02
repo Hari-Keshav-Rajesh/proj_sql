@@ -93,7 +93,7 @@ export default function Personal(){
         }
     })
 
-    if(token === true){
+    if(token === false){
         return(
             <div className="min-h-96 flex flex-col justify-center">
               <h1 className="block h-full p-4 text-center text-6xl font-bold">
