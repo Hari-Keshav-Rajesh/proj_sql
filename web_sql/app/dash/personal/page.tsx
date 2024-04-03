@@ -6,6 +6,8 @@ import BorrowedBookCard from "@/components/borrowedBookCard";
 
 import WishlistBookCard from "@/components/wishlistBookCard";
 
+import { siteConfig } from "@/config/siteconfig";
+
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -25,36 +27,8 @@ import Cookies from "js-cookie";
 
 export default function Personal(){
 
-  const [token, setToken] = useState(true);
-    const borrowedBooks = [
-      {
-        id: 1,
-        title: 'The Alchemist',
-        author: 'Paulo Coelho',
-        tags: ['fantasy', 'fiction'],
-        stock: 0,
-        rating: 4.75,
-        description: 'A philosophical novel about a young Andalusian shepherd named Santiago who travels from Spain to Egypt in search of a treasure hidden in the pyramids.'
-    },
-    {
-        id: 2,
-        title: 'To Kill a Mockingbird',
-        author: 'Harper Lee',
-        tags: ['fiction', 'drama'],
-        stock: 15,
-        rating: 4.2,
-        description: 'A Pulitzer Prize-winning novel that explores racial injustice and moral growth through the eyes of a young girl named Scout Finch in the American South.'
-    },
-    {
-        id: 3,
-        title: 'The Great Gatsby',
-        author: 'F. Scott Fitzgerald',
-        tags: ['fiction', 'classics'],
-        stock: 20,
-        rating: 4.5,
-        description: 'A tragic love story set in the roaring 1920s, depicting the pursuit of wealth, decadence, and the American Dream through the eyes of Jay Gatsby.'
-    }
-    ]
+  const [token, setToken] = useState(true)
+  const [borrowedBooks, setBorrowedBooks] = useState([])
 
     const wishlistBooks = [
       {
@@ -87,11 +61,34 @@ export default function Personal(){
     ]
 
     useEffect(() => {
-        const token = Cookies.get('token');
-        if(token === 'view'){
-          setToken(false);
+      const token = Cookies.get('token');
+
+      if(token === 'view'){
+        setToken(false);
+      }
+
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`${siteConfig.apiURL}/borrowBook`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          if (response.ok) {
+            const data = await response.json();
+            setBorrowedBooks(data);
+          } else {
+            throw new Error('Failed to fetch data');
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
         }
-    })
+      };
+
+      fetchData();
+    },[])
 
     if(token === false){
         return(
@@ -114,8 +111,16 @@ export default function Personal(){
                   {
                     borrowedBooks.length>0 ?
                     (
-                      borrowedBooks.map((book) => (
-                        <BorrowedBookCard key={book.id} title={book.title} author={book.author} tags={book.tags} rating={book.rating} stock={book.stock} description={book.description}/>
+                      borrowedBooks.map((book:any) => (
+                        <BorrowedBookCard
+                         key={book.book_id} 
+                         id={book.book_id} 
+                         title={book.Name} 
+                         author={book.Author} 
+                         tags={book.Genre.split(",")} 
+                         rating={book.Rating} 
+                         stock={book.Stock} 
+                         description="Add Description Later"/>
                       ))
                     ) : (
                       <div className="text-lg font-bold flex justify-center">
