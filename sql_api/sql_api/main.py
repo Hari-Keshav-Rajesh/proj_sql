@@ -90,7 +90,7 @@ async def create_borrowedBooks(borBook: borrowedBase, db: Session = Depends(get_
 
     # Check if the user can borrow more books (limit is 3)
     if num_borrowed_books >= 3:
-        return {"message": "You have reached the limit of borrowed books."}
+        return {"message": "You have reached the limit of borrowed books.","status": 0}
 
     # If the user can borrow more books, add the new borrowed book
     db_borBook = models.Borrowed(borrow_id=generate_unique_id(),User_id=user_id, book_id=borBook.BookId)
@@ -104,7 +104,7 @@ async def create_borrowedBooks(borBook: borrowedBase, db: Session = Depends(get_
 
     db.commit()
 
-    return {"message": "Book borrowed successfully."}
+    return {"message": "Book borrowed successfully.","status": 1}
 
 # Return a borrowed book
 @app.post("/returnBook")

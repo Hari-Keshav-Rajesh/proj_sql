@@ -20,6 +20,7 @@ import { Button } from './ui/button'
 
 import { ToastAction } from "@/components/ui/toast"
 import { useToast } from "@/components/ui/use-toast"
+import { useRouter } from 'next/navigation'
 
 import Link from 'next/link'
 
@@ -41,6 +42,8 @@ import Cookies from 'js-cookie'
 import { siteConfig } from '@/config/siteconfig'
 
 export default function BookCard({id,title, author, tags, rating, stock,description}: {id:string,title: string, author: string, tags: string[], rating: number, stock: number,description: string}){
+
+    const router = useRouter()
 
     const fullStar = Math.floor(rating);
 
@@ -160,6 +163,9 @@ export default function BookCard({id,title, author, tags, rating, stock,descript
                                             description: `${data.message}`
                                         })
                                         borrowBook(title)
+                                        if(data["status"]==1){
+                                            router.push('/dash/personal')
+                                        }
                                         }}
                                     >
                                         Continue
