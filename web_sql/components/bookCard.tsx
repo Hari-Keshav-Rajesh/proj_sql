@@ -38,8 +38,9 @@ import {
 import toTitleCase from '@/config/utils/titleCase';
 
 import Cookies from 'js-cookie'
+import { siteConfig } from '@/config/siteconfig'
 
-export default function BookCard({title, author, tags, rating, stock,description}: {title: string, author: string, tags: string[], rating: number, stock: number,description: string}){
+export default function BookCard({id,title, author, tags, rating, stock,description}: {id:string,title: string, author: string, tags: string[], rating: number, stock: number,description: string}){
 
     const fullStar = Math.floor(rating);
 
@@ -141,13 +142,22 @@ export default function BookCard({title, author, tags, rating, stock,description
                                     <AlertDialogAction>
                                     <Button
                                         variant="default"
-                                        onClick={() => {
+                                        onClick={async() => {
+                                        // Add to borrowed books
+                                        const response = await fetch(`${siteConfig.apiURL}/borrowBook`, {
+                                            method: 'POST',
+                                            headers: {
+                                            'Content-Type': 'application/json',
+                                            'Authorization': `Bearer ${Cookies.get("token")}`
+                                            },
+                                            body: JSON.stringify({
+                                               BookId:  id
+                                            })
+                                        })
+                                        const data = await response.json()
                                         toast({
                                             title: `${title}`,
-                                            description: "Added to Borrowed Books!",
-                                            action: (
-                                            <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
-                                            ),
+                                            description: `${data.message}`
                                         })
                                         borrowBook(title)
                                         }}

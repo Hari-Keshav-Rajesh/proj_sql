@@ -20,8 +20,10 @@ class WishList(Base):
 
 class Borrowed(Base):
     __tablename__='Borrowed'
+    borrow_id=Column(VARCHAR(15),primary_key=True,index=True)
     User_id=Column(VARCHAR(15),ForeignKey('user.id'))
-    book_id=Column(VARCHAR(15),ForeignKey('books.book_id'),primary_key=True,index=True)
+    book_id=Column(VARCHAR(15),ForeignKey('books.book_id'))
+
 
 class User(Base):
     __tablename__='user'

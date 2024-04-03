@@ -7,6 +7,8 @@ import models
 from database import engine,SessionLocal
 from sqlalchemy.orm import session
 
+from utils.uuid import generate_unique_id
+
 from utils.get_db import get_db
 
 from utils.jwt import extract_token,get_token_payload
@@ -58,7 +60,9 @@ class borrowedBase(BaseModel):
 @app.get("/allBooks")
 async def show_books(db:Session=Depends(get_db),):
     books=db.query(models.Book).all()
-    return books
+    #return books as a list
+    books_return = [book for book in books]
+    return books_return
 
 # Create a new book
 @app.post("/books")
@@ -86,10 +90,10 @@ async def create_borrowedBooks(borBook: borrowedBase, db: Session = Depends(get_
 
     # Check if the user can borrow more books (limit is 3)
     if num_borrowed_books >= 3:
-        return {"message": "User Has Reached the Maximum Limit Of Borrowed Books (3)."}
+        return {"message": "You have reached the limit of borrowed books."}
 
     # If the user can borrow more books, add the new borrowed book
-    db_borBook = models.Borrowed(User_id=user_id, book_id=borBook.BookId)
+    db_borBook = models.Borrowed(borrow_id=generate_unique_id(),User_id=user_id, book_id=borBook.BookId)
     db.add(db_borBook)
 
     # Reduce the stock of the borrowed book
@@ -100,7 +104,7 @@ async def create_borrowedBooks(borBook: borrowedBase, db: Session = Depends(get_
 
     db.commit()
 
-    return {"message": "Borrowed Book Added Successfully"}
+    return {"message": "Book borrowed successfully."}
 
 # Return a borrowed book
 @app.post("/returnBook")

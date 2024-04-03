@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -11,16 +11,42 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import tags from "@/config/tags";
-import books from "@/config/books";
 import BookCard from "@/components/bookCard";
 import toTitleCase from "@/config/utils/titleCase";
+import { siteConfig } from "@/config/siteconfig";
 
 import { Icons } from "@/config/icons";
+
+import Cookies from "js-cookie";
 
 export default function Books() {
   const [tag, setTag] = useState("all books")
   const [search,setSearch] = useState("")
+  const [books, setBooks] = useState([]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${siteConfig.apiURL}/allBooks`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setBooks(data);
+        } else {
+          throw new Error('Failed to fetch data');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  
   return (
     <div className="mt-10 lg:mt-16 pb-c3 px-6 xl:px-16">
       <div className="flex flex-col gap-10">
@@ -67,23 +93,24 @@ export default function Books() {
               .filter((book: any) => {
                 if(tag === "all books") 
                   return true
-                return book.tags.includes(tag)
+                return book.Genre.includes(tag)
               })
               .filter((book: any) => {
                 if(search === "")
                   return true
-                return book.title.toLowerCase().includes(search.toLowerCase())
+                return book.Name.toLowerCase().includes(search.toLowerCase())
               })
-              .sort((a, b) => b.rating - a.rating)
+              .sort((a: any, b: any) => b.Rating - a.Rating)
               .map((book: any) => (
                 <BookCard
-                  key={book.id}
-                  title={book.title}
-                  author={book.author}
-                  tags={book.tags}
-                  rating={book.rating}
-                  stock={book.stock}
-                  description={book.description}
+                  key={book.book_id}
+                  id={book.book_id}
+                  title={book.Name}
+                  author={book.Author}
+                  tags={book.Genre.split(",")}
+                  rating={book.Rating}
+                  stock={book.Stock}
+                  description="Add description later"
                 />
               ))}
           </div>
